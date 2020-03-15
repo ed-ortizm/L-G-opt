@@ -1,7 +1,6 @@
 import numpy as np
 from math import sin,cos,pi
-x = np.linspace(0.,1.,1000)
-y = np.linspace(0.,1.,1000)
+from scipy.optimize import approx_fprime as p_grad # point gradient of a scalar funtion
 #3Dploting
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
@@ -18,18 +17,18 @@ class Function:
         #self.y = y
         # Grid evaluation for ploting
         #self.X,self.Y = np.meshgrid(self.x, self.y)
-    def eval(self,x,y):
-        f = (16*x*(1-x)*y*(1-y)*sin(self.n*pi*x)*sin(self.n*pi*y))**2
+    def eval(self,x):
+        f = (16*x[0]*(1-x[0])*x[1]*(1-x[1])*sin(self.n*pi*x[0])*sin(self.n*pi*x[1]))**2
         return f
 
-    def geval(self,x,y):
+    def geval(self,x):
 # because of the np.meshgrid I get z = [f([x1,:]),f([x2,:]),...]
         # Grid evaluation for ploting
-        X,Y = np.meshgrid(x, y)
+        X,Y = np.meshgrid(x[0], x[1])
         g_f = (16*X*(1-X)*Y*(1-Y)*np.sin(self.n*np.pi*X)*np.sin(self.n*np.pi*Y))**2
         return g_f
 # Since our function is an scalar function, the Jacobian is equivalent to the gradient
-    def jacobian(self):
+    def jacobian(self):#only data case
 # Because of np.meshgrid I get J = [gx_f([x1,:]),gx_f([x2,:]),..., gy_f([x1,:]),gx_f([x2,:])]
         J = np.gradient(self.geval())
         return np.array(J)
@@ -80,8 +79,8 @@ def lm(p0,f,k=100):
 # Setting the damping factor
     # mu is the damping factor --> mu = tau*max(JtJ_ii)
 
-    # Jacobian
-    J = z.jacobian()
+    # Jacobian (only data case)
+    J = z.jacobian() # keep in mind that I'll need to retrieve one point from it (only data case).
     J_t = np.transpose(J)
     JtJ = np.matmul(Jt,J)
 
