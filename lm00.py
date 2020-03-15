@@ -10,6 +10,10 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 # dom --> domain of the fuction, it is a numpy array
 # data --> it is the data to be fitted. Note: if you are testing, you can generate data with the fuction plus some noise --> data =  f + noise
 # n --> it s the number controlling the number of extrema in the fucntion
+
+# just to avoid repetitive stuff
+x = np.linspace(0.,1.,1_000)
+X = np.array([x,x])
 class Function:
     def __init__(self, n = 1):
         self.n = n
@@ -35,9 +39,9 @@ class Function:
 
     def plt2(self):
         x = np.linspace(0.,1.,1_000)
-        y = np.linspace(0.,1.,1_000)
-        X,Y = np.meshgrid(x,y)
-        z = self.geval(x,y)
+        XY = np.array([x,x]) # new rules, now eval gets one array
+        X,Y = np.meshgrid(XY[0],XY[1])
+        z = self.geval(XY)
         fig,ax = plt.subplots(1,1)
         cp = ax.contourf(X, Y, z)
         fig.colorbar(cp)
@@ -45,9 +49,9 @@ class Function:
 
     def plt3(self):
         x = np.linspace(0.,1.,1_000)
-        y = np.linspace(0.,1.,1_000)
-        X,Y = np.meshgrid(x,y)
-        z = self.geval(x,y)
+        xy = np.array([x,x]) # new rules, now geval gets one array
+        X,Y = np.meshgrid(xy[0],xy[1])
+        z = self.geval(xy)
 
         fig = plt.figure()
         ax = fig.gca(projection='3d')
