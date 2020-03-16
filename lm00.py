@@ -32,10 +32,17 @@ class Function:
         g_f = (16*X*(1-X)*Y*(1-Y)*np.sin(self.n*np.pi*X)*np.sin(self.n*np.pi*Y))**2
         return g_f
 # Since our function is an scalar function, the Jacobian is equivalent to the gradient
-    def jacobian(self):#only data case
+#    def jacobian(self):#only data case
 # Because of np.meshgrid I get J = [gx_f([x1,:]),gx_f([x2,:]),..., gy_f([x1,:]),gx_f([x2,:])]
-        J = np.gradient(self.geval())
-        return np.array(J)
+#        J = np.gradient(self.geval())
+#        return np.array(J)
+
+    def jacobian(self,xy):#only data case
+# My function is an scalar, then the JAcobian reduces to the gradient, and here I need a 2D vector
+        e = 1e-8*np.ones(2)
+        J = p_grad(xy,self.eval,e)
+        return J
+
 
     def plt2(self):
         x = np.linspace(0.,1.,1_000)
@@ -84,17 +91,20 @@ def lm(p0,f,k=100):
     # mu is the damping factor --> mu = tau*max(JtJ_ii)
 
     # Jacobian (only data case)
-    J = z.jacobian() # keep in mind that I'll need to retrieve one point from it (only data case).
-    J_t = np.transpose(J)
-    JtJ = np.matmul(Jt,J)
+    #J = f.jacobian() # keep in mind that I'll need to retrieve one point from it (only data case).
+    #J_t = np.transpose(J)
+    #JtJ = np.matmul(Jt,J)
+    #J =
 
     # Damping factor
     mu = tau * np.diagonal(JtJ).max() # intuitively since JtJ is related to the hessian, it takes into account
     # the curvature (??)
 
 # The maximun value of my function approximately 1 --> self.eval().max()=0.9995955408159843
-    e = z - np.ones(z.shape)
-    e = epsilon**2 # numpy sqaures element-wise!
+    #e = z - np.ones(z.shape)
+    #e = epsilon**2 # numpy sqaures element-wise!
+    e = 1 - z
+    ee = e**2
     # initial movement
     delta = np.random.random(2)
     # Augmented normal equation N = diag(mu) + J(1-z)
