@@ -1,5 +1,5 @@
 import numpy as np
-from math import sin,cos,pi
+from math import sin,cos,pi,sqrt
 from scipy.optimize import approx_fprime as p_grad # point gradient of a scalar funtion
 #3Dploting
 from mpl_toolkits.mplot3d import Axes3D
@@ -73,6 +73,7 @@ class Function:
 
 def lm(p0,f,k=100):
 # P0 is the starting point
+p = p0
 # e stands for epsilon
 # Stop variables
     # k is the maximun number of iterations allowed
@@ -90,11 +91,10 @@ def lm(p0,f,k=100):
 # Setting the damping factor
     # mu is the damping factor --> mu = tau*max(JtJ_ii)
 
-    # Jacobian (only data case)
-    #J = f.jacobian() # keep in mind that I'll need to retrieve one point from it (only data case).
-    #J_t = np.transpose(J)
-    #JtJ = np.matmul(Jt,J)
-    #J =
+    # Jacobian
+    J = f.jacobian(p0)
+    J_t = np.transpose(J)
+    JtJ = np.matmul(Jt,J)
 
     # Damping factor
     mu = tau * np.diagonal(JtJ).max() # intuitively since JtJ is related to the hessian, it takes into account
@@ -105,11 +105,31 @@ def lm(p0,f,k=100):
     #e = epsilon**2 # numpy sqaures element-wise!
     e = 1 - z
     ee = e**2
-    # initial movement
-    delta = np.random.random(2)
-    # Augmented normal equation N = diag(mu) + J(1-z)
+    # initial movement: random floats in the half-open interval [0.0, 1.0). # 2D in my case
+    delta = np.zeros(2)
+    # Augmented normal equation N = diag(mu) + JtJ
     N = np.zeros(JtJ.shape)
     np.fill_diagonal(N,1.)
-    N = mu * N
+    N = mu * N + JtJ
+    # Testing initial values of the displacement
+    stop = ee*np.sum(Jt*Jt)
+    if  stop < e1:
+        print("problem solved")
+        break
+    k_i = 0
+    while !stop & k_i < k:
+        k_i = k + 1
+        while True:
+            delta = np.linalg.solve(N,e*Jt)
+            delta_module = np.sum(delta*delta)
+            p_module = np.sum(p*p)
+            if delta_module <= p_module :
+                stop = True
+            else:
+                p_new = p + delta
+
+
+            if : # emulating a do while
+
     pass
     return xy_opt
