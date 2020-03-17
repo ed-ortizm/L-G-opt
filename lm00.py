@@ -92,9 +92,8 @@ p = p0
     # mu is the damping factor --> mu = tau*max(JtJ_ii)
 
     # Jacobian
-    J = f.jacobian(p0)
-    J_t = np.transpose(J)
-    JtJ = np.matmul(Jt,J)
+    J = f.jacobian(p0) # J is a one dimensional array in my case
+    JtJ = np.outer(J,J) # np.outer(a,b) trasposes a (colum) so I get a matrix as a result
 
     # Damping factor
     mu = tau * np.diagonal(JtJ).max() # intuitively since JtJ is related to the hessian, it takes into account
@@ -117,6 +116,7 @@ p = p0
         print("problem solved")
         break
     k_i = 0
+# emulating a do while
     while !stop & k_i < k:
         k_i = k + 1
         while True:
@@ -128,8 +128,8 @@ p = p0
             else:
                 p_new = p + delta
 
-
-            if : # emulating a do while
-
+check @ for matrix mult
+        if :
+# end of emulating a do while
     pass
     return xy_opt
