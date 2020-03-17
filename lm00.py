@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.linalg import norm, solve
 from math import sin,cos,pi,sqrt
 from scipy.optimize import approx_fprime as p_grad # point gradient of a scalar funtion
 #3Dploting
@@ -73,7 +74,7 @@ class Function:
 
 def lm(p0,f,k=100):
 # P0 is the starting point
-p = p0
+    p = p0
 # e stands for epsilon
 # Stop variables
     # k is the maximun number of iterations allowed
@@ -92,9 +93,9 @@ p = p0
     # mu is the damping factor --> mu = tau*max(JtJ_ii)
 
     # Jacobian
-    J = f.jacobian(p0) # J is a one dimensional array in my case
+    J = f.jacobian(p) # J is a one dimensional array in my case
     JtJ = np.outer(J,J) # np.outer(a,b) trasposes a (colum) so I get a matrix as a result
-
+    g = e*J
     # Damping factor
     mu = tau * np.diagonal(JtJ).max() # intuitively since JtJ is related to the hessian, it takes into account
     # the curvature (??)
@@ -102,7 +103,7 @@ p = p0
 # The maximun value of my function approximately 1 --> self.eval().max()=0.9995955408159843
     #e = z - np.ones(z.shape)
     #e = epsilon**2 # numpy sqaures element-wise!
-    e = 1 - z
+    e = 1 - f.eval(p)
     ee = e**2
     # initial movement: random floats in the half-open interval [0.0, 1.0). # 2D in my case
     delta = np.zeros(2)
@@ -111,25 +112,36 @@ p = p0
     np.fill_diagonal(N,1.)
     N = mu * N + JtJ
     # Testing initial values of the displacement
-    stop = ee*np.sum(Jt*Jt)
-    if  stop < e1:
-        print("problem solved")
-        break
+    stop = norm(g) < e1
     k_i = 0
 # emulating a do while
-    while !stop & k_i < k:
+    while not(stop) & (k_i < k):
         k_i = k + 1
-        while True:
-            delta = np.linalg.solve(N,e*Jt)
-            delta_module = np.sum(delta*delta)
-            p_module = np.sum(p*p)
-            if delta_module <= p_module :
-                stop = True
-            else:
-                p_new = p + delta
 
-check @ for matrix mult
-        if :
+        delta = np.linalg.solve(N,g)
+        delta_norm = norm(delta)
+        p_norm = norm(p)
+        if delta_norm <= e2*p_norm :
+            stop = True
+        else:
+            p_new = p + delta
+            # gotta gotta
+            e_new = 1 - f.eval(p_new)
+            ee_new = e_new**2
+            rho = (ee - ee_new )/(mu*np.inner(delta,delta) + np.inner(delta,g))
+            if rho > 0:
+                p = p_new
+                J = f.jacobian(p)
+                JtJ = np.outer(J,J)
+                e = 1 - f.eval(p)
+                ee = e**2
+                g = e*J
+                stop = (norm(g)<e1) or (ee <= e3 )
+                mu = mu * np.max([1./3, 1 - (2*rho-1)**3])
+                nu = 2
+            else:
+                mu, nu = mu*nu, 2*nu
+    return p
+        #if rho > 0 or stop :
+        #    return p
 # end of emulating a do while
-    pass
-    return xy_opt
