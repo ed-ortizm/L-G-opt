@@ -82,7 +82,7 @@ def lm(p0,f,k=100):
     e1 = 1e-15
     # e2 --> threshold for the change in magnitude of the step |p_f -p_0|
     e2 = 1e-15
-    # e3 --> threshold for the sqared error e**2
+    # e3 --> threshold for the error e
     e3 = 1e-15
 # Updating variables
     # nu --> pase for updating the damping constant mu
@@ -95,7 +95,7 @@ def lm(p0,f,k=100):
     # Jacobian
     J = f.jacobian(p) # J is a one dimensional array in my case
     JtJ = np.outer(J,J) # np.outer(a,b) trasposes a (colum) so I get a matrix as a result
-    g = e*J
+
     # Damping factor
     mu = tau * np.diagonal(JtJ).max() # intuitively since JtJ is related to the hessian, it takes into account
     # the curvature (??)
@@ -105,6 +105,7 @@ def lm(p0,f,k=100):
     #e = epsilon**2 # numpy sqaures element-wise!
     e = 1 - f.eval(p)
     ee = e**2
+    g = e*J
     # initial movement: random floats in the half-open interval [0.0, 1.0). # 2D in my case
     delta = np.zeros(2)
     # Augmented normal equation N = diag(mu) + JtJ
@@ -140,7 +141,12 @@ def lm(p0,f,k=100):
                 mu = mu * np.max([1./3, 1 - (2*rho-1)**3])
                 nu = 2
             else:
-                mu, nu = mu*nu, 2*nu
+                print(mu,nu)
+                mu = mu * nu
+                nu = 2. * nu
+                stop2 = (mu == float("inf")) or (nu == float("inf"))
+                if stop2:
+                    return p
     return p
         #if rho > 0 or stop :
         #    return p
