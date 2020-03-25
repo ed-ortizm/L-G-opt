@@ -73,14 +73,14 @@ class Function:
 
 # Defining LM algorithm
 
-def lm(p0,f,k=100):
+def lm(p0,f,k=10):
 # P0 is the starting point
     p = p0
 # e stands for epsilon
 # Stop variables
     # k is the maximun number of iterations allowed
     # e1 --> threshold for the gradient
-    e1 = 1e-6
+    e1 = 1e-4
     # e2 --> threshold for the change in magnitude of the step |p_f -p_0|
     e2 = e1#1e-15
     # e3 --> threshold for the error e
@@ -89,7 +89,7 @@ def lm(p0,f,k=100):
     # nu --> pase for updating the damping constant mu
     nu = 2.
     # tau --> scaling factor for mu
-    tau = 1e-2
+    tau = 1e-3
 # Setting the damping factor
     # mu is the damping factor --> mu = tau*max(JtJ_ii)
 
@@ -120,25 +120,28 @@ def lm(p0,f,k=100):
     k_i = 0
     rho = 1.0 # to emulate the do while in the algorithm I have (second while)
     while (not stop) & (k_i < k):
-        print(k_i,k)
         k_i = k_i + 1
+        print('k_i:', k_i)
         while (rho > 0) or (stop):
+            print('test p', p)
             delta = np.linalg.solve(N,g)
             delta_norm = norm(delta)
             p_norm = norm(p)
             if delta_norm <= e2*p_norm :
                 stop = True
+                print('Stop (delta_norm):', stop)
             else:
                 p_new = p + delta
                 # Let's make sure we are not out of the unit square
                 if norm(p_new) > sqrt(2):
-                    p_new = p
+                    print('outside')
+                    p_new = p + 1e-1*delta
                 e_new = 1 - f.eval(p_new)
                 ee_new = e_new**2
                 num = (ee - ee_new )
                 den = (mu*np.inner(delta,delta) + np.inner(delta,g))
                 rho = num / den
-                print ('k_i',k_i,'rho:' , rho)
+                print ('rho:' , rho)
                 print ('num:' , num, 'den:' , den)
                 if rho > 0:
                     p = p_new
