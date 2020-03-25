@@ -118,10 +118,10 @@ def lm(p0,f,k=100):
     # Testing initial values of the displacement
     stop = norm(g,np.Inf) < e1
     k_i = 0
-# emulating a do while
-    while not(stop) & (k_i < k):
+    rho = 1.0 # to emulate the do while in the algorithm I have (second while)
+    while (not stop) & (k_i < k):
+        print(k_i,k)
         k_i = k_i + 1
-        rho = 1.0 # to emulate the do while in the algorithm I have
         while (rho > 0) or (stop):
             delta = np.linalg.solve(N,g)
             delta_norm = norm(delta)
@@ -130,14 +130,16 @@ def lm(p0,f,k=100):
                 stop = True
             else:
                 p_new = p + delta
+                # Let's make sure we are not out of the unit square
+                if norm(p_new) > sqrt(2):
+                    p_new = p
                 e_new = 1 - f.eval(p_new)
                 ee_new = e_new**2
                 num = (ee - ee_new )
                 den = (mu*np.inner(delta,delta) + np.inner(delta,g))
                 rho = num / den
-                print ('rho:' , rho)
-                print ('num:' , num)
-                print ('den:' , den)
+                print ('k_i',k_i,'rho:' , rho)
+                print ('num:' , num, 'den:' , den)
                 if rho > 0:
                     p = p_new
                     J = f.jacobian(p)
@@ -157,6 +159,7 @@ def lm(p0,f,k=100):
                     nu = 2. * nu
                     print('mu', mu)
                     print('nu', nu)
+                    print('p',p)
     return p
         #if rho > 0 or stop :
         #    return p
