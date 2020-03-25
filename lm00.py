@@ -11,7 +11,8 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 # dom --> domain of the fuction, it is a numpy array
 # data --> it is the data to be fitted. Note: if you are testing, you can generate data with the fuction plus some noise --> data =  f + noise
 # n --> it s the number controlling the number of extrema in the fucntion
-
+########## rounding number to make it look nice, if time!!
+#### put bounds (keep last position)
 # just to avoid repetitive stuff
 x = np.linspace(0.,1.,1_000)
 X = np.array([x,x])
@@ -38,7 +39,7 @@ class Function:
 #        J = np.gradient(self.geval())
 #        return np.array(J)
 
-    def jacobian(self,xy):#only data case
+    def jacobian(self,xy):#only two dim array
 # My function is an scalar, then the JAcobian reduces to the gradient, and here I need a 2D vector
         e = 1e-8*np.ones(2)
         J = p_grad(xy,self.eval,e)
@@ -68,7 +69,7 @@ class Function:
 # Add a color bar which maps values to colors.
         fig.colorbar(surf, shrink=0.5, aspect=5)
 #Plot
-        plt.plot()
+        plt.plot(xy,z)
 
 # Defining LM algorithm
 
@@ -79,16 +80,16 @@ def lm(p0,f,k=100):
 # Stop variables
     # k is the maximun number of iterations allowed
     # e1 --> threshold for the gradient
-    e1 = 1e-15
+    e1 = 1e-6
     # e2 --> threshold for the change in magnitude of the step |p_f -p_0|
-    e2 = 1e-15
+    e2 = e1#1e-15
     # e3 --> threshold for the error e
-    e3 = 1e-15
+    e3 = e1#1e-15
 # Updating variables
     # nu --> pase for updating the damping constant mu
     nu = 2.
     # tau --> scaling factor for mu
-    tau = 1e-3
+    tau = 1e-2
 # Setting the damping factor
     # mu is the damping factor --> mu = tau*max(JtJ_ii)
 
@@ -98,7 +99,9 @@ def lm(p0,f,k=100):
 
     # Damping factor
     mu = tau * np.diagonal(JtJ).max() # intuitively since JtJ is related to the hessian, it takes into account
+    print(mu,"first mu")
     # the curvature (??)
+    rho = 1.
 
 # The maximun value of my function approximately 1 --> self.eval().max()=0.9995955408159843
     #e = z - np.ones(z.shape)
@@ -113,40 +116,47 @@ def lm(p0,f,k=100):
     np.fill_diagonal(N,1.)
     N = mu * N + JtJ
     # Testing initial values of the displacement
-    stop = norm(g) < e1
+    stop = norm(g,np.Inf) < e1
     k_i = 0
 # emulating a do while
     while not(stop) & (k_i < k):
-        k_i = k + 1
-
-        delta = np.linalg.solve(N,g)
-        delta_norm = norm(delta)
-        p_norm = norm(p)
-        if delta_norm <= e2*p_norm :
-            stop = True
-        else:
-            p_new = p + delta
-            # gotta gotta
-            e_new = 1 - f.eval(p_new)
-            ee_new = e_new**2
-            rho = (ee - ee_new )/(mu*np.inner(delta,delta) + np.inner(delta,g))
-            if rho > 0:
-                p = p_new
-                J = f.jacobian(p)
-                JtJ = np.outer(J,J)
-                e = 1 - f.eval(p)
-                ee = e**2
-                g = e*J
-                stop = (norm(g)<e1) or (ee <= e3 )
-                mu = mu * np.max([1./3, 1 - (2*rho-1)**3])
-                nu = 2
+        k_i = k_i + 1
+        rho = 1.0 # to emulate the do while in the algorithm I have
+        while (rho > 0) or (stop):
+            delta = np.linalg.solve(N,g)
+            delta_norm = norm(delta)
+            p_norm = norm(p)
+            if delta_norm <= e2*p_norm :
+                stop = True
             else:
-                print(mu,nu)
-                mu = mu * nu
-                nu = 2. * nu
-                stop2 = (mu == float("inf")) or (nu == float("inf"))
-                if stop2:
-                    return p
+                p_new = p + delta
+                e_new = 1 - f.eval(p_new)
+                ee_new = e_new**2
+                num = (ee - ee_new )
+                den = (mu*np.inner(delta,delta) + np.inner(delta,g))
+                rho = num / den
+                print ('rho:' , rho)
+                print ('num:' , num)
+                print ('den:' , den)
+                if rho > 0:
+                    p = p_new
+                    J = f.jacobian(p)
+                    JtJ = np.outer(J,J)
+                    e = 1 - f.eval(p)
+                    ee = e**2
+                    g = e*J
+                    stop = (norm(g,np.Inf)<e1) or (ee <= e3 )
+                    mu = mu * np.max([1./3, 1 - (2*rho-1)**3])
+                    nu = 2
+                else:
+                    stop2 = (mu == np.Inf) or (nu == np.Inf)
+                    if stop2:
+                        print('stop 2 reached')
+                        return p
+                    mu = mu * nu
+                    nu = 2. * nu
+                    print('mu', mu)
+                    print('nu', nu)
     return p
         #if rho > 0 or stop :
         #    return p
