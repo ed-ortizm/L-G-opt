@@ -18,6 +18,8 @@
 import sys
 import numpy as np
 from math import sin, pi, log, exp
+import matplotlib
+import matplotlib.pyplot as plt
 ## Initial parameters for the annealing
 # n: number of steps
 n       = int(sys.argv[1])
@@ -87,9 +89,7 @@ def annealing(x_start=[0.,0.],n=50,m=50):
                 dE_avg = (dE_avg*(n_acc-1) + dE)/n_acc
             else:
                 if (i==0) and (j==0):
-                    print("here we are")
                     dE_avg = dE
-                #print("i,j >>>>>>>>>>>" ,i,j)
                 p = acceptance_p(dE,T,dE_avg)
                 if np.random.random() < p:
                     x_c[0], x_c[1] = x_i[0], x_i[1]
@@ -104,7 +104,32 @@ def annealing(x_start=[0.,0.],n=50,m=50):
         T = T_frac * T
     return energies,x
 
+def annealing_plot(points, energies):
+    #opt = 0.5*np.ones(energies.size)
+    plt.figure()
+    plt.suptitle("Evolution of x and y: the optimum is (0.5,0.5)")
+    plt.subplot(121)
+    plt.ylim(-0.1,1.1)
+    plt.hlines(0.5,0,energies.size)
+    plt.plot(points[:,0],'r')
+    #plt.plot(points[:,0],opt, 'r')
+    plt.title("x")
+    plt.subplot(122)
+    plt.ylim(-0.1,1.1)
+    plt.hlines(0.5,0,energies.size)
+    plt.plot(points[:,1],'b')
+    #plt.plot(points[:,1],opt, 'b')
+    plt.title("y")
+    plt.show()
+
+    plt.figure()
+    plt.title("Evolution of the energy")
+    plt.ylim(-0.1,1.1)
+    plt.hlines(1.,0,energies.size)
+    plt.plot(-1.*energies,'b')
+    plt.show()
 # Starting annealing
 
 energies, points = annealing(x_start=x ,n=n,m=m)
-print(points)
+#print(energies.size)
+annealing_plot(points,energies)
