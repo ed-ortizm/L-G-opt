@@ -64,7 +64,7 @@ def annealing(x_start=[0.,0.],n=50,m=50):
     n_aa = n_acc + 1 # I automatically accept the starting point
     # Current optimum point
     x_c = x_start # Again the starting point is initially accepted
-    energy_c = energy(x_i) # Again... that's why I use _i
+    energy_c = energy(x_i,nn) # Again... that's why I use _i
     energies = np.zeros(n+1)
     energies[0] = energy_c # Again... that's why I use _i
     # Current temperature
@@ -81,10 +81,10 @@ def annealing(x_start=[0.,0.],n=50,m=50):
             x_i[0] = np.clip(aux,0.,1.)[0]
             x_i[1] = np.clip(aux,0.,1.)[1]
             # Change in energy
-            dE = abs(energy(x_i)-energy_c)
-            if  energy(x_i) < energy_c:
+            dE = abs(energy(x_i,nn)-energy_c)
+            if  energy(x_i,nn) < energy_c:
                 x_c[0], x_c[1] = x_i[0], x_i[1]
-                energy_c = energy(x_i)
+                energy_c = energy(x_i,nn)
                 n_acc = n_acc + 1.
                 dE_avg = (dE_avg*(n_acc-1) + dE)/n_acc
             else:
@@ -93,7 +93,7 @@ def annealing(x_start=[0.,0.],n=50,m=50):
                 p = acceptance_p(dE,T,dE_avg)
                 if np.random.random() < p:
                     x_c[0], x_c[1] = x_i[0], x_i[1]
-                    energy_c = energy(x_i)
+                    energy_c = energy(x_i,nn)
                     n_acc = n_acc + 1.
                     dE_avg = (dE_avg*(n_acc-1) + dE)/n_acc
         # Best values after a thermalization
