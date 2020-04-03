@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import numpy as np
+from math import sin, pi
 import sys
 # Plotting
 import matplotlib
@@ -30,9 +31,21 @@ def fitness(population,nn=1):
         fitness[i] = f
         i = i+1
     return fitness
-
-def breeding(population, fitness, n_parents):
-    pass
+population = np.random.random((5,2))
+#print(population,fitness(population))
+def mating_pool(population, fitness, n_parents):
+    parents = np.zeros((n_parents,2))
+    for parent in range(n_parents):
+        max_fit_idx = np.where(fitness==np.max(fitness))
+        # out: (array([val]),)
+        max_fit_idx = max_fit_idx[0][0]
+        parents[parent,:] = population[max_fit_idx,:]
+        # Now we delete that fitness value to make sure we go for the next one
+        # during the next iteration
+        fitness[max_fit_idx] = -1.
+    return parents
+print(population,mating_pool(population,fitness(population),2))
 def crossover(parents,offpring_size):
     pass
-def mutation(offspring_crossover, num_mutations=1)
+def mutation(offspring_crossover, num_mutations=1):
+    pass
