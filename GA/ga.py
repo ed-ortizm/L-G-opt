@@ -49,8 +49,8 @@ def mating_pool(population, fitness, n_parents):
 parents = mating_pool(population,fitness,5)
 def crossover(parents):
     n_offsprings = parents[:,0].size
-    offsprings = np.zeros((n_offsprings*2,2))
-    for i in range(n_offsprings):
+    offsprings = np.zeros((n_offsprings*2+2,2))
+    for i in range(n_offsprings+1):
         # Indexes for the mates
         p1_idx = i% parents.shape[0]
         p2_idx = (i+1)% parents.shape[0]
