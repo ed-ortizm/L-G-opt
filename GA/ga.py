@@ -32,6 +32,7 @@ def fitness(population,nn=1):
         i = i+1
     return fitness
 population = np.random.random((5,2))
+fitness = fitness(population)
 #print(population,fitness(population))
 def mating_pool(population, fitness, n_parents):
     parents = np.zeros((n_parents,2))
@@ -44,8 +45,32 @@ def mating_pool(population, fitness, n_parents):
         # during the next iteration
         fitness[max_fit_idx] = -1.
     return parents
-print(population,mating_pool(population,fitness(population),2))
-def crossover(parents,offpring_size):
-    pass
+#print(population,mating_pool(population,fitness(population),2))
+parents = mating_pool(population,fitness,4)
+def crossover(parents,n_offsprings):
+    #n_offsprings = parents[:,0].size//2
+    #if (n_offsprings%2 != 0):
+    #    n_offsprings = n_offsprings + 1
+    offsprings = np.zeros((n_offsprings,2))
+    for i in range(n_offsprings):
+        # Indexes for the mates
+        p1_idx = i% parents.shape[0]
+        p2_idx = (i+1)% parents.shape[0]
+        p1_x = str(parents[p1_idx][0])[2:10]
+        p1_y = str(parents[p1_idx][1])[2:10]
+        p1_xy = p1_x + p1_y
+        p2_x = str(parents[p2_idx][0])[2:10]
+        p2_y = str(parents[p2_idx][1])[2:10]
+        p2_xy = p2_x + p2_y
+        # I could generate 2 and take the most fit, like one child policy :O
+        offsp = p1_xy[0:3] + p2_xy[3:]
+        offsp_x = float('0.' + offsp[:8])
+        offsp_y = float('0.' + offsp[8:])
+        offsprings[i][0] = offsp_x
+        offsprings[i][1] = offsp_y
+    return offsprings
+offsprings = crossover(parents,6)
+
+print(parents,'\n\n',offsprings)
 def mutation(offspring_crossover, num_mutations=1):
     pass
