@@ -77,5 +77,26 @@ def crossover(parents):
 offsprings = crossover(parents)
 
 print(parents,'\n\n',offsprings)
-def mutation(offspring_crossover, num_mutations=1):
-    pass
+def mutation(offsprings, num_mutations=1,p_mut=0.01):
+    offsprings_mutated = np.zeros(offsprings.shape)
+    i = 0
+    for offsp in offsprings:
+        x = str(offsp[0])[2:]
+        if len(x)!=8:
+            x = x + '0'
+        y = str(offsp[1])[2:]
+        if len(y)!=8:
+            y = y + '0'
+        xy = x+y
+        for mutation in range(num_mutations):
+            if np.random.random() < p_mut:
+                idx = np.random.randint(0,16)
+                xy[idx] = str(np.random.randint(0,9))
+        offsprings_mutated[i][0] = float('0.' + xy[:8])
+        offsprings_mutated[i][1] = float('0.' + xy[8:])
+        i = i+1
+    return offsprings_mutated
+offsprings_mutated = mutation(offsprings)
+print('\n', offsprings_mutated)
+diff = offsprings - offsprings_mutated
+print('\n', diff)
