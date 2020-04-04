@@ -27,6 +27,7 @@ def fitness(population,nn=1):
         i = i+1
     return fitness
 def mating_pool(population, fitness, n_parents):
+    # Return the individuals sorted from the fittest to the les fittet
     parents = np.zeros((n_parents,2))
     for parent in range(n_parents):
         max_fit_idx = np.where(fitness==np.max(fitness))
