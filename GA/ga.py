@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 import numpy as np
 from math import sin, pi
-import sys
-# Plotting
-import matplotlib
-import matplotlib.pyplot as plt
-
 ## From charbonneau1995: GAs in astronomy and astrophysics
 
 # A top-level view of a genetic algorithm is as follows: given a
@@ -31,9 +26,6 @@ def fitness(population,nn=1):
         fitness[i] = f
         i = i+1
     return fitness
-population = np.random.random((5,2))
-fitness = fitness(population)
-#print(population,fitness(population))
 def mating_pool(population, fitness, n_parents):
     parents = np.zeros((n_parents,2))
     for parent in range(n_parents):
@@ -45,8 +37,6 @@ def mating_pool(population, fitness, n_parents):
         # during the next iteration
         fitness[max_fit_idx] = -1.
     return parents
-#print(population,mating_pool(population,fitness(population),2))
-parents = mating_pool(population,fitness,5)
 def crossover(parents):
     n_offsprings = parents[:,0].size
     offsprings = np.zeros((n_offsprings*2+2,2))
@@ -60,23 +50,20 @@ def crossover(parents):
         p2_x = str(parents[p2_idx][0])[2:10]
         p2_y = str(parents[p2_idx][1])[2:10]
         p2_xy = p2_x + p2_y
-        # I could generate 2 and take the most fit, like one child policy :O
+        # Offspring 1
         offsp_1 = p1_xy[0:3] + p2_xy[3:]
         offsp_1_x = float('0.' + offsp_1[:8])
         offsp_1_y = float('0.' + offsp_1[8:])
-
+        # Offspring 2
         offsp_2 = p1_xy[3:] + p2_xy[:3]
         offsp_2_x = float('0.' + offsp_2[:8])
         offsp_2_y = float('0.' + offsp_2[8:])
-
+        # Collecting offsprings
         offsprings[2*i][0] = offsp_1_x
         offsprings[2*i][1] = offsp_1_y
         offsprings[2*i+1][0] = offsp_2_x
         offsprings[2*i+1][1] = offsp_2_y
     return offsprings
-offsprings = crossover(parents)
-
-print(parents,'\n\n',offsprings)
 def mutation(offsprings, num_mutations=1,p_mut=0.01):
     offsprings_mutated = np.zeros(offsprings.shape)
     i = 0
@@ -90,13 +77,14 @@ def mutation(offsprings, num_mutations=1,p_mut=0.01):
         xy = x+y
         for mutation in range(num_mutations):
             if np.random.random() < p_mut:
-                idx = np.random.randint(0,16)
-                xy[idx] = str(np.random.randint(0,9))
+                idx = np.random.randint(0,15)
+                if idx == 0:
+                    xy = str(np.random.randint(0,9)) + xy[1:]
+                elif idx == 15:
+                    xy = xy[:idx] + str(np.random.randint(0,9))
+                else:
+                    xy = xy[0:idx] + str(np.random.randint(0,9)) + xy[idx+1:]
         offsprings_mutated[i][0] = float('0.' + xy[:8])
         offsprings_mutated[i][1] = float('0.' + xy[8:])
         i = i+1
     return offsprings_mutated
-offsprings_mutated = mutation(offsprings)
-print('\n', offsprings_mutated)
-diff = offsprings - offsprings_mutated
-print('\n', diff)
