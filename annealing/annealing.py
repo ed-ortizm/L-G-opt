@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 ## I'll be following these two tutorials
 # http://apmonitor.com/me575/index.php/Main/SimulatedAnnealing
 # https://perso.crans.org/besson/publis/notebooks/Simulated_annealing_in_Python.html
@@ -14,23 +12,10 @@
     # uniform distribution between 0 and 1; if the random number is smaller
     # than the Boltzmann probability, the configuration is acceptedself.
     # This allows the algorithm to escape local minima.
-
-import sys
 import numpy as np
 from math import sin, pi, log, exp
 import matplotlib
 import matplotlib.pyplot as plt
-## Initial parameters for the annealing
-# n: number of steps
-n       = int(sys.argv[1])
-# m: number of microstates visited to ensure thermalization
-m       = int(sys.argv[2])
-# x: the starting point
-x_start = float(sys.argv[3])
-y_start = float(sys.argv[4])
-x       = np.array([x_start,y_start])
-# nn: integer controling the number of picks in my energy
-nn = int(sys.argv[5])
 ## energy: in my case it will be the original function with a minus
 # just to convert the maxima into a minima (cp & pt from lm00 )
 
@@ -45,7 +30,8 @@ def acceptance_p(dE,T, dE_avg):
     B_factor = exp(-dE / (dE_avg * T) )
     return B_factor
 
-def annealing(x_start=[0.,0.],n=50,m=50):
+def annealing(x_start=[0.,0.],n=50,m=50,nn=1):
+    print(x_start)
     # number of accepted solutions
     n_acc = 0.
     # Probability of acceptin worst solution at the beginning and in the end
@@ -104,10 +90,11 @@ def annealing(x_start=[0.,0.],n=50,m=50):
         T = T_frac * T
     return energies,x
 
-def annealing_plot(points, energies):
+def annealing_plot(points, energies, x_s, nn,chain):
     #opt = 0.5*np.ones(energies.size)
     plt.figure()
-    plt.suptitle("Evolution of x and y: the optimum is (0.5,0.5)")
+    plt.suptitle('x and y starting at ' + x_s + \
+    'for n = ' + str(nn))
     plt.subplot(121)
     plt.ylim(-0.1,1.1)
     plt.hlines(0.5,0,energies.size)
@@ -120,16 +107,11 @@ def annealing_plot(points, energies):
     plt.plot(points[:,1],'b')
     #plt.plot(points[:,1],opt, 'b')
     plt.title("y")
-    plt.show()
+    plt.savefig('xy_evolution_n_'+ str(nn) + 'chain_' + str(chain) + '.png')
 
     plt.figure()
-    plt.title("Evolution of the energy")
+    plt.title("energy for n = " + str(nn) + ' starting at ' + x_s)
     plt.ylim(-0.1,1.1)
     plt.hlines(1.,0,energies.size)
     plt.plot(-1.*energies,'b')
-    plt.show()
-# Starting annealing
-
-energies, points = annealing(x_start=x ,n=n,m=m)
-#print(energies.size)
-annealing_plot(points,energies)
+    plt.savefig('energy_n_' + str(nn)+ 'chain_' + str(chain) +'.png')
