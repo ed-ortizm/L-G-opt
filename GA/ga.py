@@ -79,12 +79,16 @@ def mutation(offsprings, num_mutations=1,p_mut=0.01):
         for mutation in range(num_mutations):
             if np.random.random() < p_mut:
                 idx = np.random.randint(0,15)
+                gene = str(np.random.randint(0,9))
+                print(xy)
+                print('idx: ' , idx, ', gene: ', gene)
                 if idx == 0:
-                    xy = str(np.random.randint(0,9)) + xy[1:]
+                    xy = gene + xy[1:]
                 elif idx == 15:
-                    xy = xy[:idx] + str(np.random.randint(0,9))
+                    xy = xy[:idx] + gene
                 else:
-                    xy = xy[0:idx] + str(np.random.randint(0,9)) + xy[idx+1:]
+                    xy = xy[0:idx] + gene + xy[idx+1:]
+                print(xy)
         offsprings_mutated[i][0] = float('0.' + xy[:8])
         offsprings_mutated[i][1] = float('0.' + xy[8:])
         i = i+1
