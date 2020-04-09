@@ -14,28 +14,41 @@ m       = int(sys.argv[2])
 #y_start = float(sys.argv[4])
 #x       = np.array([x_start,y_start])
 
+# convergence criteria
+e = 0.05 # 0.01 is to much to ask to this algorithm
 #### Starting annealing
 ## Defining different values 'nn' for the energy function
-nns = [2*i+1 for i in range(2)]
+nns = [2*i+1 for i in range(10)]
 ## Defining 10 random starting points to get 10 chains
 for nn in nns:
     xx = np.random.random((10,2))
+    # 1 if converged, 0 if not
+    convergence = np.zeros(xx.shape[0])
     n_chain = 0
     means= np.zeros(xx.shape)
     variances = np.zeros(xx.shape)
     for x in xx:
         # x_s is the starting point in string formar, used for naming files and title
         x_s = '('+str(x[0])[:6]+','+str(x[1])[:6]+')'
-        print('starting at ', x)
+        #print('starting at ', x)
         energies, points = annealing(x_start=x ,n=n,m=m, nn = nn)
-        print('ending at', points[-1])
+        #print('ending at', points[-1])
+        #print('final energy ', energy(points[-1],nn))
+        # Checking for convergence
+        if abs(1+energy(points[-1],nn))< e:
+            convergence[n_chain] = 1
+            #print('Convergence for chain ', n_chain)
         # Saving the mean and variance for each chain
         means[n_chain][0] = points.mean(axis=0)[0]
         means[n_chain][1] = points.mean(axis=0)[1]
         variances[n_chain][0] = points.var(axis=0)[0]
         variances[n_chain][1] = points.var(axis=0)[1]
         n_chain = n_chain + 1
-        annealing_plot(points,energies,x_s=x_s,nn=nn,chain = n_chain)
+        #annealing_plot(points,energies,x_s=x_s,nn=nn,chain = n_chain)
+    ## Computing convergence rate
+    print('convergence rate for nn ', nn)
+    conv_rate = convergence.sum()/len(convergence)
+    print(conv_rate)
     ## https://blog.stata.com/2016/05/26/gelman-rubin-convergence-diagnostic-using-multiple-chains/
     # Computing the overall sample posterior mean, the between-chains and the
     # within-chain variances
