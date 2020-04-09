@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 from ga import *
-nn= 9
-tolerance = 0.01
+nn= 1
+tolerance = 0.05
 n_gens = 5_000
 #### From charbonneau1995: GAs in astronomy and astrophysics
 
 ## 1. Construct a random initial population and evaluate the fitness of it.
-n_parents = 1000
+n_parents = 10
 population = np.random.random((n_parents,2))
 print('Initial population: ', population.shape[0])
 fitnesses = fitness(population,nn=nn)
@@ -25,6 +25,7 @@ if  e < tolerance:
     print('We did it! It took ' + str(0) + ' generations.')
     print(parents[0])
 for n_gen in range(n_gens):
+    print('gen ', n_gen)
     #print('number of parents: ',parents.shape[0])
     ## 2. Construct a new population by breeding selected individuals from the old
     # population.

@@ -45,12 +45,19 @@ def crossover(parents):
         # Indexes for the mates
         p1_idx = i% parents.shape[0]
         p2_idx = (i+1)% parents.shape[0]
-        p1_x = str(parents[p1_idx][0])[2:10]
-        p1_y = str(parents[p1_idx][1])[2:10]
+
+        p1_x = str(parents[p1_idx][0])[:8]
+        p1_x = convert(p1_x)
+        p1_y = str(parents[p1_idx][1])[:8]
+        p1_y = convert(p1_y)
         p1_xy = p1_x + p1_y
-        p2_x = str(parents[p2_idx][0])[2:10]
-        p2_y = str(parents[p2_idx][1])[2:10]
+
+        p2_x = str(parents[p2_idx][0])[:8]
+        p2_x = convert(p2_x)
+        p2_y = str(parents[p2_idx][1])[:8]
+        p2_y = convert(p2_y)
         p2_xy = p2_x + p2_y
+
         # Offspring 1
         offsp_1 = p1_xy[0:3] + p2_xy[3:]
         offsp_1_x = float('0.' + offsp_1[:8])
@@ -69,28 +76,21 @@ def mutation(offsprings, num_mutations=1,p_mut=0.01):
     offsprings_mutated = np.zeros(offsprings.shape)
     i = 0
     for offsp in offsprings:
-        # print('x= ', offsp[0])
-        # print('y= ', offsp[1])
-        x = str(offsp[0])[2:]
-        if len(x)!=8:
-            x = x + '0'
-        y = str(offsp[1])[2:]
-        if len(y)!=8:
-            y = y + '0'
+        x = str(offsp[0])
+        x = convert(x)
+        y = str(offsp[1])
+        y = convert(y)
         xy = x+y
         for mutation in range(num_mutations):
             if np.random.random() < p_mut:
                 idx = np.random.randint(0,15)
                 gene = str(np.random.randint(0,9))
-                print(xy)
-                print('idx: ' , idx, ', gene: ', gene)
                 if idx == 0:
                     xy = gene + xy[1:]
                 elif idx == 15:
                     xy = xy[:idx] + gene
                 else:
                     xy = xy[0:idx] + gene + xy[idx+1:]
-                print(xy)
         offsprings_mutated[i][0] = float('0.' + xy[:8])
         offsprings_mutated[i][1] = float('0.' + xy[8:])
         i = i+1
@@ -105,7 +105,6 @@ def convert(x):
         idx_e= x.index('e')
         if '.' in x: idx_d= x.index('.')
         exp = int(x[idx_e+2:])
-        print(exp)
         if exp == 8:
             if '.' in x:
                 x = x[:idx_d] + x[idx_d+1:idx_e]
@@ -126,13 +125,10 @@ def convert(x):
                     aux = aux + '0'
                 x = aux + x
             else:
-                print('I am here')
                 x = x[:idx_e]
-                print(x)
                 for i in range(8-exp):
                     aux2 = aux2 + '0'
                 x = x + aux2
-                print(aux2,x)
                 for i in range(8-len(x)):
                     aux = aux + '0'
                 x = aux + x
