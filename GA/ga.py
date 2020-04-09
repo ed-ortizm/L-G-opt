@@ -46,15 +46,15 @@ def crossover(parents):
         p1_idx = i% parents.shape[0]
         p2_idx = (i+1)% parents.shape[0]
 
-        p1_x = str(parents[p1_idx][0])[:8]
+        p1_x = str(parents[p1_idx][0])[:10]
         p1_x = convert(p1_x)
-        p1_y = str(parents[p1_idx][1])[:8]
+        p1_y = str(parents[p1_idx][1])[:10]
         p1_y = convert(p1_y)
         p1_xy = p1_x + p1_y
 
-        p2_x = str(parents[p2_idx][0])[:8]
+        p2_x = str(parents[p2_idx][0])[:10]
         p2_x = convert(p2_x)
-        p2_y = str(parents[p2_idx][1])[:8]
+        p2_y = str(parents[p2_idx][1])[:10]
         p2_y = convert(p2_y)
         p2_xy = p2_x + p2_y
 

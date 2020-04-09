@@ -12,7 +12,24 @@ last step: get the convergence ratio
 4. Plot the convergencce ratio against nn
 
 5. Plot all the data generated in 1 and see how to add 2
+#############
+Run several times the code and compute the mean, median and standard deviation
+ of the convergences rates a. (10 to 100 times)
 
+ compute the gelman--- for half of the chain. Other wise ull skew the stats
+
+ Do the gelman--- for chains that converged and chains that didn't
+
+ check the code
+
+ check for the sensitivity of the gelman --- here (I can be traped in a ring)
+ I can make a bigguer square or multiply the burning values by 100.
+
+plot how the individuals are evolving
+plot the "best member" and the "mean member"
+
+compute the mean value of the iterations for a given population to reach
+the optimum point. Do it also for MCMC
 ################################
 questions:
 
@@ -21,3 +38,51 @@ the lenght of the chains and the nns. Is that Ok? What should I be noticing?
 
 2. What exactly does PSRF measures?. I computed the % of the number of chains
 that converged according to my threshold and it changes with nn, but the PSRF no.
+
+def convert(x):
+    if len(x)==10:
+        x= x[2:]
+    elif 'e' in x:
+        aux = ''
+        aux2= ''
+        idx_e= x.index('e')
+        if '.' in x: idx_d= x.index('.')
+        exp = int(x[idx_e+2:])
+        print(exp)
+        if exp == 8:
+            if '.' in x:
+                x = x[:idx_d] + x[idx_d+1:idx_e]
+                for i in range(8-len(x)):
+                    aux = aux + '0'
+                x = aux + x
+            else:
+                for i in range(exp-1):
+                    aux = aux + '0'
+                x = aux + x[:idx_e]
+        else:
+            if '.' in x:
+                x = x[:idx_d] + x[idx_d+1:idx_e]
+                for i in range(7-exp):
+                    aux2 = aux2 + '0'
+                x = x + aux2
+                for i in range(8-len(x)):
+                    aux = aux + '0'
+                x = aux + x
+            else:
+                print('I am here')
+                x = x[:idx_e]
+                print(x)
+                for i in range(8-exp):
+                    aux2 = aux2 + '0'
+                x = x + aux2
+                print(aux2,x)
+                for i in range(8-len(x)):
+                    aux = aux + '0'
+                x = aux + x
+    else:
+        aux= ''
+        x = x[2:]
+        for i in range(8-len(x)):
+            aux= aux + '0'
+        x = x + aux
+    return x

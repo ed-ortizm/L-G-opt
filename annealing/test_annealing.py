@@ -21,7 +21,7 @@ e = 0.05 # 0.01 is to much to ask to this algorithm
 nns = [2*i+1 for i in range(10)]
 ## Defining 10 random starting points to get 10 chains
 for nn in nns:
-    xx = np.random.random((10,2))
+    xx = np.random.random((4,2))
     # 1 if converged, 0 if not
     convergence = np.zeros(xx.shape[0])
     n_chain = 0
@@ -39,10 +39,11 @@ for nn in nns:
             convergence[n_chain] = 1
             #print('Convergence for chain ', n_chain)
         # Saving the mean and variance for each chain
-        means[n_chain][0] = points.mean(axis=0)[0]
-        means[n_chain][1] = points.mean(axis=0)[1]
-        variances[n_chain][0] = points.var(axis=0)[0]
-        variances[n_chain][1] = points.var(axis=0)[1]
+        chain_size = 125
+        means[n_chain][0] = points[chain_size:].mean(axis=0)[0]
+        means[n_chain][1] = points[chain_size:].mean(axis=0)[1]
+        variances[n_chain][0] = points[chain_size:].var(axis=0)[0]
+        variances[n_chain][1] = points[chain_size:].var(axis=0)[1]
         n_chain = n_chain + 1
         #annealing_plot(points,energies,x_s=x_s,nn=nn,chain = n_chain)
     ## Computing convergence rate
@@ -58,8 +59,8 @@ for nn in nns:
     variances22 = variances**2
     B = (m/(chains-1))*(means22.sum(axis=0)+chains*mean**2-2*mean*means.sum(axis=0))
     W = (1/chains)*(variances22.sum(axis=0))
-    # print('for nn ', nn, ' we have')
-    # print(B,W)
+    print('for nn ', nn, ' we have')
+    print(B,W)
 
     # Potential Scale Reduction Factor
 
