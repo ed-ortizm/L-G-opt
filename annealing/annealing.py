@@ -31,7 +31,7 @@ def acceptance_p(dE,T, dE_avg):
     return B_factor
 
 def annealing(x_start=[0.,0.],n=50,m=50,nn=1):
-    print(x_start)
+    #print(x_start)
     # number of accepted solutions
     n_acc = 0.
     # Probability of acceptin worst solution at the beginning and in the end
