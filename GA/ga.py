@@ -69,6 +69,8 @@ def mutation(offsprings, num_mutations=1,p_mut=0.01):
     offsprings_mutated = np.zeros(offsprings.shape)
     i = 0
     for offsp in offsprings:
+        # print('x= ', offsp[0])
+        # print('y= ', offsp[1])
         x = str(offsp[0])[2:]
         if len(x)!=8:
             x = x + '0'
@@ -93,3 +95,51 @@ def mutation(offsprings, num_mutations=1,p_mut=0.01):
         offsprings_mutated[i][1] = float('0.' + xy[8:])
         i = i+1
     return offsprings_mutated
+
+def convert(x):
+    if len(x)==10:
+        x= x[2:]
+    elif 'e' in x:
+        aux = ''
+        aux2= ''
+        idx_e= x.index('e')
+        if '.' in x: idx_d= x.index('.')
+        exp = int(x[idx_e+2:])
+        print(exp)
+        if exp == 8:
+            if '.' in x:
+                x = x[:idx_d] + x[idx_d+1:idx_e]
+                for i in range(8-len(x)):
+                    aux = aux + '0'
+                x = aux + x
+            else:
+                for i in range(exp-1):
+                    aux = aux + '0'
+                x = aux + x[:idx_e]
+        else:
+            if '.' in x:
+                x = x[:idx_d] + x[idx_d+1:idx_e]
+                for i in range(7-exp):
+                    aux2 = aux2 + '0'
+                x = x + aux2
+                for i in range(8-len(x)):
+                    aux = aux + '0'
+                x = aux + x
+            else:
+                print('I am here')
+                x = x[:idx_e]
+                print(x)
+                for i in range(8-exp):
+                    aux2 = aux2 + '0'
+                x = x + aux2
+                print(aux2,x)
+                for i in range(8-len(x)):
+                    aux = aux + '0'
+                x = aux + x
+    else:
+        aux= ''
+        x = x[2:]
+        for i in range(8-len(x)):
+            aux= aux + '0'
+        x = x + aux
+    return x

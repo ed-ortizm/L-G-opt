@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 from ga import *
-nn= 1
+nn= 9
 tolerance = 0.01
 n_gens = 5_000
 #### From charbonneau1995: GAs in astronomy and astrophysics
 
 ## 1. Construct a random initial population and evaluate the fitness of it.
-n_parents = 10
+n_parents = 1000
 population = np.random.random((n_parents,2))
 print('Initial population: ', population.shape[0])
 fitnesses = fitness(population,nn=nn)
@@ -25,7 +25,7 @@ if  e < tolerance:
     print('We did it! It took ' + str(0) + ' generations.')
     print(parents[0])
 for n_gen in range(n_gens):
-    print('number of parents: ',parents.shape[0])
+    #print('number of parents: ',parents.shape[0])
     ## 2. Construct a new population by breeding selected individuals from the old
     # population.
     # I breed the individuals
@@ -34,12 +34,12 @@ for n_gen in range(n_gens):
     offsprings = mutation(offsprings, num_mutations=1,p_mut=0.01)
     # I gather all the individuals
     new_pop = np.zeros((parents.shape[0]+offsprings.shape[0],2))
-    print('Number of offsprings: ', offsprings.shape[0])
+    #print('Number of offsprings: ', offsprings.shape[0])
     ## 3. Evaluate the fitness of each member of the new population.
     # The new population consist of paremts and offsprings
     new_pop = np.concatenate((parents,offsprings))
     #print(new_pop)
-    print('number of population: ', new_pop.shape[0])
+    #print('number of population: ', new_pop.shape[0])
     #print(new_pop)
     fitnesses = fitness(new_pop,nn=nn)
     ## 4. Replace the old population by the new population.
