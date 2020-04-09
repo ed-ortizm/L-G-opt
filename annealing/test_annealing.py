@@ -16,7 +16,7 @@ m       = int(sys.argv[2])
 
 #### Starting annealing
 ## Defining different values 'nn' for the energy function
-nns = [2*i+1 for i in range(31)]
+nns = [2*i+1 for i in range(2)]
 ## Defining 10 random starting points to get 10 chains
 for nn in nns:
     xx = np.random.random((10,2))
@@ -24,16 +24,18 @@ for nn in nns:
     means= np.zeros(xx.shape)
     variances = np.zeros(xx.shape)
     for x in xx:
+        # x_s is the starting point in string formar, used for naming files and title
+        x_s = '('+str(x[0])[:6]+','+str(x[1])[:6]+')'
+        print('starting at ', x)
         energies, points = annealing(x_start=x ,n=n,m=m, nn = nn)
+        print('ending at', points[-1])
         # Saving the mean and variance for each chain
         means[n_chain][0] = points.mean(axis=0)[0]
         means[n_chain][1] = points.mean(axis=0)[1]
         variances[n_chain][0] = points.var(axis=0)[0]
         variances[n_chain][1] = points.var(axis=0)[1]
-        # x_s is the starting point in string formar, used for naming files and title
-        x_s = '('+str(x[0])[:6]+','+str(x[1])[:6]+')'
         n_chain = n_chain + 1
-        #annealing_plot(points,energies,x_s=x_s,nn=nn,chain = n_chain)
+        annealing_plot(points,energies,x_s=x_s,nn=nn,chain = n_chain)
     ## https://blog.stata.com/2016/05/26/gelman-rubin-convergence-diagnostic-using-multiple-chains/
     # Computing the overall sample posterior mean, the between-chains and the
     # within-chain variances
