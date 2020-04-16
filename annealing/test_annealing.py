@@ -23,7 +23,7 @@ e = 0.05 # 0.01 is to much to ask to this algorithm
 ## Defining different values 'nn' for the energy function
 nns = [2*i+1 for i in range(11)]
 ## Defining 10 random starting points to get 10 chains
-runs = 5
+runs = 50
 conv_ratios = np.zeros((len(nns),runs+1))
 for run in range(runs):
     print('run: ', run)
@@ -55,12 +55,6 @@ for run in range(runs):
             if abs(1+energy(points[-1],nn))< e:
                 convergence[n_chain] = 1
                 #print('Convergence for chain ', n_chain)
-            # Saving the mean and variance for each chain
-            # idx = n*2//3
-            # means[n_chain][0] = points[idx:].mean(axis=0)[0]
-            # means[n_chain][1] = points[idx:].mean(axis=0)[1]
-            # variances[n_chain][0] = points[idx:].var(axis=0)[0]
-            # variances[n_chain][1] = points[idx:].var(axis=0)[1]
             n_chain = n_chain + 1
         np.savetxt('chains_x_n_' + str(nn) + '_run_' + str(run) + '.txt' ,\
         chains_x, delimiter='\t', fmt="%1.4f")
@@ -75,20 +69,4 @@ for run in range(runs):
         conv_ratios[i][run+1] = conv_rate
         # print(conv_rate,conv_ratios[i][0],conv_ratios[i][1])
         i = i+1
-        ## https://blog.stata.com/2016/05/26/gelman-rubin-convergence-diagnostic-using-multiple-chains/
-        # Computing the overall sample posterior mean, the between-chains and the
-        # within-chain variances
-        # chains = xx.shape[0]
-        # mean = means.mean(axis=0)
-        # means22 = means**2
-        # variances22 = variances**2
-        # B = (m/(chains-1))*(means22.sum(axis=0)+chains*mean**2-2*mean*means.sum(axis=0))
-        # W = (1/chains)*(variances22.sum(axis=0))
-        # # print('for nn ', nn, ' we have')
-        # # print(B,W)
-        #
-        # # Potential Scale Reduction Factor
-        #
-        # PSRF = ((m-1)/m) + ((chains+1)/(chains*m))*B
-        # # print('The PSRF is ', PSRF)
 np.savetxt('conv_rates.txt', conv_ratios, delimiter='\t', fmt="%1.2f")
