@@ -15,7 +15,7 @@ e = 0.05 # 0.01 is to much to ask to this algorithm
 ## Defining different values 'nn' for the energy function
 nns = [2*i+1 for i in range(11)]
 # number of times the code will run
-runs = 100
+runs = 1
 # storing the convergence ratios per nn per run
 conv_ratios = np.zeros((len(nns),runs+1))
 for run in range(runs):
@@ -36,11 +36,12 @@ for run in range(runs):
         for x in xx:
             # x_s is the starting point in string format, used for naming files
             # and the title
-            x_s = '('+str(x[0])[:6]+','+str(x[1])[:6]+')'
+            x_s = '('+str(x[0])[:4]+','+str(x[1])[:4]+')'
             #print('starting at ', x)
             energies, points  = annealing(x_start=x ,n=n,m=m, nn = nn)
-            # chains[:,2*n_chain]   = points[:,0]
-            # chains[:,2*n_chain+1] = points[:,1]
+            ## Plotting (only for the first run, could be any run)
+            if run==0:
+                annealing_plot(points,energies,x_s=x_s,nn=nn,chain = n_chain)
             chains_y[:,n_chain]   = points[:,1]
             chains_x[:,n_chain]   = points[:,0]
             #print('ending at', points[-1])
@@ -54,10 +55,7 @@ for run in range(runs):
         chains_x, delimiter='\t', fmt="%1.4f")
         np.savetxt('chains_y_n_' + str(nn) + '_run_' + str(run) + '.txt' ,\
         chains_y, delimiter='\t', fmt="%1.4f")
-        # np.savetxt('chains_n_' + str(nn) , chains_y, delimiter='\t', fmt="%1.4f")
-            #annealing_plot(points,energies,x_s=x_s,nn=nn,chain = n_chain)
         ## Computing convergence rate
-        # print('convergence rate for nn ', nn)
         conv_rate = convergence.sum()/len(convergence)
         conv_ratios[i][0] = nn
         conv_ratios[i][run+1] = conv_rate
