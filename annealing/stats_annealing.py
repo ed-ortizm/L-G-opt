@@ -40,8 +40,8 @@ for n in data:
 nn = [2*i+1 for i in range(11)]
 
 for n in nn:
-    x_file = 'chains_x_n_' + str(n) + '_run_3.txt'
-    y_file = 'chains_y_n_' + str(n) + '_run_3.txt'
+    x_file = 'chains_x_n_' + str(n) + '_run_10.txt'
+    y_file = 'chains_y_n_' + str(n) + '_run_10.txt'
     x_data = np.loadtxt(x_file)
     y_data = np.loadtxt(y_file)
     x_means, x_variances = mean_var(x_data)

@@ -30,7 +30,7 @@ def acceptance_p(dE,T, dE_avg):
     B_factor = exp(-dE / (dE_avg * T) )
     return B_factor
 
-def annealing(x_start=[0.,0.],n=50,m=50,nn=1):
+def annealing(x_start=[0.,0.],n=100,m=20,nn=1):
     #print(x_start)
     # number of accepted solutions
     n_acc = 0.

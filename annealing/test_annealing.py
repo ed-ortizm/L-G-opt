@@ -23,7 +23,7 @@ e = 0.05 # 0.01 is to much to ask to this algorithm
 ## Defining different values 'nn' for the energy function
 nns = [2*i+1 for i in range(11)]
 ## Defining 10 random starting points to get 10 chains
-runs = 50
+runs = 100
 conv_ratios = np.zeros((len(nns),runs+1))
 for run in range(runs):
     print('run: ', run)
