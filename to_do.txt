@@ -1,44 +1,19 @@
-The code is working. Here the guideline to characterize it
-(this is generic and can be used to the other two algorithms):
+Gor GA:
 
-1. Start from 10 diferent points (10 chains) and save all the data
-in a file
+- plot how the individuals are evolving
+- plot the "best member" and the "mean member"
 
-2. Use  the Gelman-Rubin diagnostics for the data generated in the
-last step: get the convergence ratio
-
-3. Do the last two steps for nn = [1,3,...,21]
-
-4. Plot the convergencce ratio against nn [done] maybe it will be better to
-do another for and plot the average
-
-5. Plot all the data generated in 1 and see how to add 2
-#############
-Run several times the code and compute the mean, median and standard deviation
- of the convergences rates a. (10 to 100 times) [done]
-
- compute the gelman--- for half of the chain. Other wise ull skew the stats [done]
-
- Do the gelman--- for chains that converged and chains that didn't
-
- check the code
-
- check for the sensitivity of the gelman --- here (I can be traped in a ring)
- I can make a bigguer square or multiply the burning values by 100.
-
-plot how the individuals are evolving
-plot the "best member" and the "mean member"
-
-compute the mean value of the iterations for a given population to reach
-the optimum point. Do it also for MCMC
+- compute the mean value of the iterations for a given population to reach
+the optimum point. Do it also for MCMC by ploting the conv ratio vs the length of the chain
 ################################
-questions:
+Notes:
 
-1. I have generated the PSRF and they seem to be very alike when changin'
-the lenght of the chains and the nns. Is that Ok? What should I be noticing?
+I won't compute the average length it took for a chain to converge, because at the beginning I didn't implemented
+the annealing function to halt when convergence happened. I did so, to have the same length in all the chains and
+use the simplified version of the Gelman and Rubin equations. I can check it inderectly by studying how the convergence
+ratio changes as a function of the length of the chain. I'll actually do it
 
-2. What exactly does PSRF measures?. I computed the % of the number of chains
-that converged according to my threshold and it changes with nn, but the PSRF no.
+
 
 def convert(x):
     if len(x)==10:

@@ -8,26 +8,21 @@ n = int(sys.argv[1])
 m = int(sys.argv[2])
 # Number of starting points
 p = int(sys.argv[3])
-# chains   = np.zeros((n+1,2*p))
-# print(chains.shape)
-# nn: integer controling the number of picks in my energy
-#nn = int(sys.argv[3])
-# x: the starting point
-#x_start = float(sys.argv[3])
-#y_start = float(sys.argv[4])
-#x       = np.array([x_start,y_start])
 
 # convergence criteria
 e = 0.05 # 0.01 is to much to ask to this algorithm
 #### Starting annealing
 ## Defining different values 'nn' for the energy function
 nns = [2*i+1 for i in range(11)]
-## Defining 10 random starting points to get 10 chains
+# number of times the code will run
 runs = 100
+# storing the convergence ratios per nn per run
 conv_ratios = np.zeros((len(nns),runs+1))
 for run in range(runs):
     print('run: ', run)
-    conv_its = 0
+    # length of the chain when it converges
+    conv_lgth = 0
+    # Storing the chains
     chains_x = np.zeros((n+1,p))
     chains_y = np.zeros((n+1,p))
     # n+1 is to include the starting point
@@ -36,9 +31,8 @@ for run in range(runs):
         xx = np.random.random((p,2))
         # 1 if converged, 0 if not
         convergence = np.zeros(xx.shape[0])
+        # idx to flag the number of the chain we are working with
         n_chain = 0
-        means= np.zeros(xx.shape)
-        variances = np.zeros(xx.shape)
         for x in xx:
             # x_s is the starting point in string format, used for naming files
             # and the title

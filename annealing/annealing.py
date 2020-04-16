@@ -117,3 +117,59 @@ def annealing_plot(points, energies, x_s, nn,chain):
     plt.plot(-1.*energies,'b')
     plt.savefig('energy_n_' + str(nn)+ '_chain_' + str(chain) +'.png')
     plt.close()
+
+## Gelman-Runin Statistics
+
+class GR:
+    def __init__(self,data):
+        self.data = data
+        self.length = data.shape[1]
+
+    def mean_var(self):
+        # Saving the mean and variance for each chain
+        # Using only the last third of data: the idea is to use only data that is 'burned'
+        idx = self.data.shape[0]*2//3
+        data = self.data[idx:]
+        means = np.mean(data, axis=0)
+        variances = np.var(data, axis=0)
+        return means, variances
+
+    def GelmanRubin(self):
+        means, variances = self.mean_var()
+        N = self.length
+        M = means.shape[0]
+        ovl_mean = np.mean(means)
+        # Between-chains variances
+        B = (means - ovl_mean)**2
+        B = (N/(M-1))*B.sum()
+        # Between-chains variances
+        W = (1/M)*variances.sum()
+        # Pooled variance
+        V = ((N-1)/N)*W + ((M+1)/(M*N))*B
+        # Potential Scale Reduction Factor
+        PSRF = V/W
+        return PSRF,B, W
+
+# def mean_var(data):
+#     # Saving the mean and variance for each chain
+#     # Using only the last third of data: the idea is to use only data that is 'burned'
+#     idx = data.shape[0]*2//3
+#     data = data[idx:]
+#     means = np.mean(data, axis=0)
+#     variances = np.var(data, axis=0)
+#     return means, variances
+#
+# def GelmanRubin(means, variances,length):
+#     N = length
+#     M = means.shape[0]
+#     ovl_mean = np.mean(means)
+#     # Between-chains variances
+#     B = (means - ovl_mean)**2
+#     B = (N/(M-1))*B.sum()
+#     # Between-chains variances
+#     W = (1/M)*variances.sum()
+#     # Pooled variance
+#     V = ((N-1)/N)*W + ((M+1)/(M*N))*B
+#     # Potential Scale Reduction Factor
+#     PSRF = V/W
+#     return PSRF,B, W
