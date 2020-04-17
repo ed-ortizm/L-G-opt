@@ -45,7 +45,6 @@ class Function:
         J = p_grad(xy,self.eval,e)
         return J
 
-
     def plt2(self):
         x = np.linspace(0.,1.,1_000)
         XY = np.array([x,x]) # new rules, now eval gets one array

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 from ga import *
-nn= 1
+nn= 21
 tolerance = 0.05
 n_gens = 5_000
+plot = F_plt(nn)
 #### From charbonneau1995: GAs in astronomy and astrophysics
 
 ## 1. Construct a random initial population and evaluate the fitness of it.
@@ -35,27 +36,20 @@ for n_gen in range(n_gens):
     offsprings = mutation(offsprings, num_mutations=1,p_mut=0.01)
     # I gather all the individuals
     new_pop = np.zeros((parents.shape[0]+offsprings.shape[0],2))
-    #print('Number of offsprings: ', offsprings.shape[0])
     ## 3. Evaluate the fitness of each member of the new population.
     # The new population consist of paremts and offsprings
     new_pop = np.concatenate((parents,offsprings))
-    #print(new_pop)
-    #print('number of population: ', new_pop.shape[0])
-    #print(new_pop)
     fitnesses = fitness(new_pop,nn=nn)
     ## 4. Replace the old population by the new population.
     # I keep the number of the initial population to be similar to the first one
     parents = mating_pool(new_pop,fitnesses,n_parents)
+    if n_gen in np.arange(0,1100,100): plot.plt2(parents)
     ## 5. Test convergence
     fittest = fitness(parents,nn=nn)
     e = abs(1-fittest[0])
+    #unless fittest phenotype matches target
+    # phenotype within tolerance, goto step 2.
     if  e < tolerance:
         print('We did it! It took ' + str(n_gen) + ' generations.')
         print(parents[0],fittest[0])
         break
-    else:
-        pass
-        #print(n_gen+1,'\n',parents[0:3,:])
-
-#unless fittest phenotype matches target
-# phenotype within tolerance, goto step 2.

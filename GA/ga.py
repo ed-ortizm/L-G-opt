@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 import numpy as np
-from math import sin, pi
+from math import sin,pi
+from scipy.optimize import approx_fprime as p_grad # point gradient of a scalar funtion
+#3Dploting
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
+
 ## From charbonneau1995: GAs in astronomy and astrophysics
 
 # A top-level view of a genetic algorithm is as follows: given a
@@ -97,6 +104,7 @@ def mutation(offsprings, num_mutations=1,p_mut=0.01):
     return offsprings_mutated
 
 def convert(x):
+    # Function to convert the number to a 8 characters string.
     if len(x)==10:
         x= x[2:]
     elif 'e' in x:
@@ -139,3 +147,24 @@ def convert(x):
             aux= aux + '0'
         x = x + aux
     return x
+class F_plt:
+    def __init__(self, n = 1):
+        self.n = n
+
+    def geval(self,x):
+        # because of the np.meshgrid I get z = [f([x1,:]),f([x2,:]),...]
+        # Grid evaluation for ploting
+        X,Y = np.meshgrid(x[0], x[1])
+        g_f = (16*X*(1-X)*Y*(1-Y)*np.sin(self.n*np.pi*X)*np.sin(self.n*np.pi*Y))**2
+        return g_f
+
+    def plt2(self,population):
+        x = np.linspace(0.,1.,1_000)
+        XY = np.array([x,x]) # new rules, now eval gets one array
+        X,Y = np.meshgrid(XY[0],XY[1])
+        z = self.geval(XY)
+        fig,ax = plt.subplots(1,1)
+        cp = ax.contourf(X, Y, z)
+        fig.colorbar(cp)
+        plt.scatter(population[:,0],population[:,1], color='r')
+        plt.show()

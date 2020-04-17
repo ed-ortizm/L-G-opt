@@ -1,10 +1,10 @@
 Gor GA:
 
-- plot how the individuals are evolving
+- plot how the individuals are evolving --> 5 panels from the paper
 - plot the "best member" and the "mean member"
-
 - compute the mean value of the iterations for a given population to reach
 the optimum point. Do it also for MCMC by ploting the conv ratio vs the length of the chain
+- Mention in the report the problem I had when changing to strings to do the crossover and mutations
 ################################
 Notes:
 
@@ -12,53 +12,3 @@ I won't compute the average length it took for a chain to converge, because at t
 the annealing function to halt when convergence happened. I did so, to have the same length in all the chains and
 use the simplified version of the Gelman and Rubin equations. I can check it inderectly by studying how the convergence
 ratio changes as a function of the length of the chain. I'll actually do it
-
-
-
-def convert(x):
-    if len(x)==10:
-        x= x[2:]
-    elif 'e' in x:
-        aux = ''
-        aux2= ''
-        idx_e= x.index('e')
-        if '.' in x: idx_d= x.index('.')
-        exp = int(x[idx_e+2:])
-        print(exp)
-        if exp == 8:
-            if '.' in x:
-                x = x[:idx_d] + x[idx_d+1:idx_e]
-                for i in range(8-len(x)):
-                    aux = aux + '0'
-                x = aux + x
-            else:
-                for i in range(exp-1):
-                    aux = aux + '0'
-                x = aux + x[:idx_e]
-        else:
-            if '.' in x:
-                x = x[:idx_d] + x[idx_d+1:idx_e]
-                for i in range(7-exp):
-                    aux2 = aux2 + '0'
-                x = x + aux2
-                for i in range(8-len(x)):
-                    aux = aux + '0'
-                x = aux + x
-            else:
-                print('I am here')
-                x = x[:idx_e]
-                print(x)
-                for i in range(8-exp):
-                    aux2 = aux2 + '0'
-                x = x + aux2
-                print(aux2,x)
-                for i in range(8-len(x)):
-                    aux = aux + '0'
-                x = aux + x
-    else:
-        aux= ''
-        x = x[2:]
-        for i in range(8-len(x)):
-            aux= aux + '0'
-        x = x + aux
-    return x
