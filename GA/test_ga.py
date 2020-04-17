@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from ga import *
 nn= 21
-tolerance = 0.05
+tolerance = 0.01
 n_gens = 5_000
 plot = F_plt(nn)
 #### From charbonneau1995: GAs in astronomy and astrophysics
@@ -9,6 +9,8 @@ plot = F_plt(nn)
 ## 1. Construct a random initial population and evaluate the fitness of it.
 n_parents = 10
 population = np.random.random((n_parents,2))
+## plotting initial population
+plot.plt2(population,0,nn)
 print('Initial population: ', population.shape[0])
 fitnesses = fitness(population,nn=nn)
 # Now I sort the points according to their fitness measure. Then, I chose app
@@ -43,7 +45,7 @@ for n_gen in range(n_gens):
     ## 4. Replace the old population by the new population.
     # I keep the number of the initial population to be similar to the first one
     parents = mating_pool(new_pop,fitnesses,n_parents)
-    if n_gen in np.arange(0,1100,100): plot.plt2(parents)
+    if n_gen in [0,1,2,3,4,5,6,7,8,9,19,49,99,199,499,999,1999,2999,3999,4999]: plot.plt2(parents, n_gen +1, nn)
     ## 5. Test convergence
     fittest = fitness(parents,nn=nn)
     e = abs(1-fittest[0])
@@ -52,4 +54,5 @@ for n_gen in range(n_gens):
     if  e < tolerance:
         print('We did it! It took ' + str(n_gen) + ' generations.')
         print(parents[0],fittest[0])
+        plot.plt2(parents, n_gen, nn)
         break

@@ -158,7 +158,7 @@ class F_plt:
         g_f = (16*X*(1-X)*Y*(1-Y)*np.sin(self.n*np.pi*X)*np.sin(self.n*np.pi*Y))**2
         return g_f
 
-    def plt2(self,population):
+    def plt2(self,population,n_gen,nn):
         x = np.linspace(0.,1.,1_000)
         XY = np.array([x,x]) # new rules, now eval gets one array
         X,Y = np.meshgrid(XY[0],XY[1])
@@ -167,4 +167,8 @@ class F_plt:
         cp = ax.contourf(X, Y, z)
         fig.colorbar(cp)
         plt.scatter(population[:,0],population[:,1], color='r')
-        plt.show()
+        plt.title("generation: " + str(n_gen) + ', n= ' + str(nn))
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.savefig("generation_" + str(n_gen) + '_n_' + str(nn) + '.png')
+        plt.close()
