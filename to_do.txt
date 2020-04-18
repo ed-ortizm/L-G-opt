@@ -1,7 +1,7 @@
 Gor GA:
 
 - plot how the individuals are evolving --> 5 panels from the paper
-- plot the "best member" and the "mean member"
+- plot the "best member" and the "median member"
 - compute the mean value of the iterations for a given population to reach
 the optimum point. Do it also for MCMC by ploting the conv ratio vs the length of the chain
 - Mention in the report the problem I had when changing to strings to do the crossover and mutations
@@ -12,3 +12,7 @@ I won't compute the average length it took for a chain to converge, because at t
 the annealing function to halt when convergence happened. I did so, to have the same length in all the chains and
 use the simplified version of the Gelman and Rubin equations. I can check it inderectly by studying how the convergence
 ratio changes as a function of the length of the chain. I'll actually do it
+############
+
+use 6 plots for GA individual approa
+add the best fitness score to the plots as a legend obviously
