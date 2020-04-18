@@ -9,10 +9,10 @@ plot = F_plt(nn)
 ## 1. Construct a random initial population and evaluate the fitness of it.
 n_parents = 10
 population = np.random.random((n_parents,2))
-## plotting initial population
-#plot.plt2(population,0,nn)
-print('Initial population: ', population.shape[0])
+#print('Initial population: ', population.shape[0])
 fitnesses = fitness(population,nn=nn)
+## plotting initial population
+plot.plt2(population,0,nn,max=np.max(fitnesses))
 fittest_parent = []
 median_parents = []
 fittest_parent.append(np.max(fitnesses))
@@ -53,7 +53,8 @@ for n_gen in range(n_gens):
     fittest_parent.append(np.max(parents_fitness))
     median_parents.append(np.median(parents_fitness))
     #print(fittest_parent,median_fitness_parents)
-    #if n_gen in [0,1,2,3,4,5,6,7,8,9,19,49,99,199,499,999,1999,2999,3999,4999]: plot.plt2(parents, n_gen +1, nn)
+    if n_gen in [0,1,2,3,4,5,6,7,8,9,19,49,99,199,499,999,1999,2999,3999,4999]:
+        plot.plt2(parents, n_gen +1, nn,max=np.max(parents_fitness))
     ## 5. Test convergence
     fittest = fitness(parents,nn=nn)
     e = abs(1-fittest[0])
@@ -62,16 +63,16 @@ for n_gen in range(n_gens):
     if  e < tolerance:
         print('We did it! It took ' + str(n_gen) + ' generations.')
         print(parents[0],fittest[0])
-        #plot.plt2(parents, n_gen, nn)
+        plot.plt2(parents, n_gen, nn,max=fittest[0])
         break
-plt.figure()
-plt.title('Fitness score evolution for n=' + str(nn))
-plt.xlabel('generation')
-plt.ylabel('fitness score')
-plt.ylim(0,1.1)
-plt.xticks(np.arange(0,24,4))
-plt.plot(fittest_parent[:20],'k.-',label='max fitness')
-plt.plot(median_parents[:20],'b.-',label='median fitness')
-plt.legend()
-plt.savefig('score_evol_n_' + str(nn) + '.png')
-plt.close()
+# plt.figure()
+# plt.title('Fitness score evolution for n=' + str(nn))
+# plt.xlabel('generation')
+# plt.ylabel('fitness score')
+# plt.ylim(0,1.1)
+# plt.xticks(np.arange(0,24,4))
+# plt.plot(fittest_parent[:20],'k.-',label='max fitness')
+# plt.plot(median_parents[:20],'b.-',label='median fitness')
+# plt.legend()
+# plt.savefig('score_evol_n_' + str(nn) + '.png')
+# plt.close()
